@@ -15,6 +15,7 @@ function launchServer(port)
     route("/") do
         "Hi there! This is server 1"
     end
+    
     route("/jsontest") do
         (:message => "Hi there!this is a json test") |> json
     end
@@ -27,7 +28,7 @@ function launchServer(port)
     route("/send") do
         response = HTTP.request(
             "POST",
-            "https://julia-apiserver2.herokuapp.com/echo",
+            "https://julia-apiserver1.herokuapp.com/echo",
             [("Content-Type", "application/json")],
             """{"message":"hello", "repeat":3}""",
         )
