@@ -72,10 +72,10 @@ uuid = "528830af-5a63-567c-a44a-034ed33b8444"
 version = "0.10.1+1"
 
 [[HTTP]]
-deps = ["Base64", "Dates", "IniFile", "MbedTLS", "NetworkOptions", "Sockets", "URIs"]
-git-tree-sha1 = "b855bf8247d6e946c75bb30f593bfe7fe591058d"
+deps = ["Base64", "Dates", "IniFile", "Logging", "MbedTLS", "NetworkOptions", "Sockets", "URIs"]
+git-tree-sha1 = "44e3b40da000eab4ccb1aecdc4801c040026aeb5"
 uuid = "cd3eb016-35fb-5094-929b-558a96fad6f3"
-version = "0.9.8"
+version = "0.9.13"
 
 [[HttpCommon]]
 deps = ["Dates", "Nullables", "Test", "URIParser"]
