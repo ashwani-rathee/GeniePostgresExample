@@ -39,11 +39,21 @@ function launchServer(port)
     end
 
     route("/create") do
-        result = execute(conn, """       CREATE TABLE 'customers' (         'CustomerID' varchar(5) NOT NULL,
-        'CompanyName' varchar(40) NOT NULL,
-        'ContactName' varchar(30) DEFAULT NULL,
-        PRIMARY KEY ('CustomerID'),
-        KEY 'CompanyName' ('CompanyName'),)""")
+        result = execute(conn, """
+        CREATE TABLE customers (
+    customer_id bpchar NOT NULL,
+    company_name character varying(40) NOT NULL,
+    contact_name character varying(30),
+    contact_title character varying(30),
+    address character varying(60),
+    city character varying(15),
+    region character varying(15),
+    postal_code character varying(10),
+    country character varying(15),
+    phone character varying(24),
+    fax character varying(24)
+);
+        """)
     end
 
     route("/delete") do 
