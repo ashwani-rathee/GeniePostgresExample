@@ -71,8 +71,26 @@ function launchServer(port)
         INSERT INTO customers VALUES ('BERGS', 'Berglunds snabbköp', 'Christina Berglund', 'Order Administrator', 'Berguvsvägen  8', 'Luleå', NULL, 'S-958 22', 'Sweden', '0921-12 34 65', '0921-12 34 67');
         """)
     end
+
+    form = """
+    <form action="/" method="POST" enctype="multipart/form-data">
+    <input type="text" name="name" value="" placeholder="What's your name?" />
+    <input type="submit" value="Greet" />
+    </form>
+    """
+
+    route("/command") do
+        html(form)
+    end
+
+    route("/command", method = POST) do
+        "Hello $(postpayload(:name, "Anon"))"
+    end
+
     Genie.AppServer.startup(async = false)
 end
 
 launchServer(parse(Int, ARGS[1]))
+
+conn = LibPQ.Connection("dbname=danenfcgd5khab host=ec2-35-153-114-74.compute-1.amazonaws.com port=5432 user=hbwwyuvguzemdw password=514ffbe17667034ddf0db74ae2d5157c2caf0374c5ac127d0ce38a679345786e sslmode=require")
 
