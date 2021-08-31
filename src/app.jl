@@ -5,6 +5,8 @@ import Genie.Renderer.Json: json
 using Genie.Renderer.Json, Genie.Requests
 using Genie.Renderer.Html
 using LibPQ, Tables
+using DataFrames, PrettyTables
+using Genie.Renderer
 conn = LibPQ.Connection("dbname=danenfcgd5khab host=ec2-35-153-114-74.compute-1.amazonaws.com port=5432 user=hbwwyuvguzemdw password=514ffbe17667034ddf0db74ae2d5157c2caf0374c5ac127d0ce38a679345786e sslmode=require")
 
 function launchServer(port)
@@ -12,6 +14,8 @@ function launchServer(port)
     Genie.config.run_as_server = true
     Genie.config.server_host = "0.0.0.0"
     Genie.config.server_port = port
+    Genie.Configuration.isprod = true
+
 
     println("port set to $(port)")
 
@@ -74,24 +78,54 @@ function launchServer(port)
     end
 
     form = """
-    <form action="/" method="POST" enctype="multipart/form-data">
-    <input type="text" name="name" value="" placeholder="What's your name?" />
-    <input type="submit" value="Greet" />
+    <form action="/command" method="POST" enctype="multipart/form-data">
+    <textarea id="name" style="resize: none;" name="name" rows="4" cols="50" />SELECT * FROM COMPANY;</textarea> <br><br>
+    <input type="submit" value="Run Postgres SQL >>" />
     </form>
     """
 
-    route("/command") do
-        html(form)
+    restore = """
+    DROP TABLE IF EXISTS COMPANY;
+    CREATE TABLE COMPANY(
+    ID INT PRIMARY KEY     NOT NULL,
+    NAME           TEXT    NOT NULL,
+    AGE            INT     NOT NULL,
+    ADDRESS        CHAR(50),
+    SALARY         REAL,
+    JOIN_DATE	  DATE
+    );
+    INSERT INTO COMPANY (ID,NAME,AGE,ADDRESS,SALARY,JOIN_DATE) VALUES (1, 'Paul', 32, 'California', 20000.00,'2001-07-13');
+    INSERT INTO COMPANY (ID,NAME,AGE,ADDRESS,JOIN_DATE) VALUES (2, 'Allen', 25, 'Texas', '2007-12-13');
+    INSERT INTO COMPANY (ID,NAME,AGE,ADDRESS,SALARY,JOIN_DATE) VALUES (3, 'Teddy', 23, 'Norway', 20000.00, DEFAULT );
+    INSERT INTO COMPANY (ID,NAME,AGE,ADDRESS,SALARY,JOIN_DATE) VALUES (4, 'Mark', 25, 'Rich-Mond ', 65000.00, '2007-12-13' ), (5, 'David', 27, 'Texas', 85000.00, '2007-12-13');
+    """
+
+    restoreform = """
+    <form action="/restore" method="POST" enctype="multipart/form-data">
+    <input type="submit" value="Restore Database" />
+    </form>
+    """
+    route("/restore", method = POST) do
+        result = execute(conn, """ $restore""")
+        redirect(:get_com)
+
+    end
+
+    route("/command",named=:get_com) do
+        html("SQL STATEMENT:\n" * form * "\n Restore Database:\n" * restoreform)
     end
 
     route("/command", method = POST) do
-        "Hello $(postpayload(:name, "Anon"))"
+        result = DataFrame(execute(conn, """ $(postpayload(:name, "Anon")) """))
+        data = pretty_table(String, result; backend = Val(:html))
+        html("SQL STATEMENT:\n" * form * "\n " * "Output From Query:" * data * "\n Restore Database:\n" * restoreform)
     end
 
     Genie.AppServer.startup(async = false)
 end
+conn = LibPQ.Connection("dbname=danenfcgd5khab host=ec2-35-153-114-74.compute-1.amazonaws.com port=5432 user=hbwwyuvguzemdw password=514ffbe17667034ddf0db74ae2d5157c2caf0374c5ac127d0ce38a679345786e sslmode=require")
 
 launchServer(parse(Int, ARGS[1]))
+# launchServer( 8001)
 
-conn = LibPQ.Connection("dbname=danenfcgd5khab host=ec2-35-153-114-74.compute-1.amazonaws.com port=5432 user=hbwwyuvguzemdw password=514ffbe17667034ddf0db74ae2d5157c2caf0374c5ac127d0ce38a679345786e sslmode=require")
 
