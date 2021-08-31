@@ -14,7 +14,6 @@ function launchServer(port)
     Genie.config.run_as_server = true
     Genie.config.server_host = "0.0.0.0"
     Genie.config.server_port = port
-    Genie.Configuration.isprod = true
 
 
     println("port set to $(port)")
