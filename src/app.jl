@@ -59,7 +59,7 @@ function launchServer(port)
 );
         """)
     end
-
+    
     route("/delete") do 
         result = execute(conn, """
         DROP TABLE IF EXISTS customers;
@@ -76,9 +76,11 @@ function launchServer(port)
         """)
     end
 
+    holder = "SELECT * FROM COMPANY;"
+
     form = """
     <form action="/command" method="POST" enctype="multipart/form-data">
-    <textarea id="name" style="resize: none;" name="name" rows="4" cols="50" />SELECT * FROM COMPANY;</textarea> <br><br>
+    <textarea id="name" style="resize: none;" name="name" rows="4" cols="50" />$holder</textarea> <br><br>
     <input type="submit" value="Run Postgres SQL >>" />
     </form>
     """
@@ -104,6 +106,7 @@ function launchServer(port)
     <input type="submit" value="Restore Database" />
     </form>
     """
+
     route("/restore", method = POST) do
         result = execute(conn, """ $restore""")
         redirect(:get_com)
@@ -115,6 +118,13 @@ function launchServer(port)
     end
 
     route("/command", method = POST) do
+        holder = "$(postpayload(:name, "Anon"))"
+        form = """
+        <form action="/command" method="POST" enctype="multipart/form-data">
+        <textarea id="name" style="resize: none;" name="name" rows="4" cols="50" />$holder</textarea> <br><br>
+        <input type="submit" value="Run Postgres SQL >>" />
+        </form>
+        """
         result = DataFrame(execute(conn, """ $(postpayload(:name, "Anon")) """))
         data = pretty_table(String, result; backend = Val(:html))
         html("SQL STATEMENT:\n" * form * "\n " * "Output From Query:" * data * "\n Restore Database:\n" * restoreform)
@@ -125,6 +135,6 @@ end
 conn = LibPQ.Connection("dbname=danenfcgd5khab host=ec2-35-153-114-74.compute-1.amazonaws.com port=5432 user=hbwwyuvguzemdw password=514ffbe17667034ddf0db74ae2d5157c2caf0374c5ac127d0ce38a679345786e sslmode=require")
 
 launchServer(parse(Int, ARGS[1]))
-# launchServer( 8001)
+launchServer( 8001)
 
 
