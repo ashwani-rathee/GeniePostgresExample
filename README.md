@@ -1,19 +1,21 @@
-This project hosts a minimal [Genie.jl](https://github.com/GenieFramework/Genie.jl) web app on Heroku using a [julia buildpack](https://github.com/Optomatica/heroku-buildpack-julia).
+# Julia TryPostGresSQL editor
+This project hosts postgress database editor similiar to  TrySQL editor provided by w3schools.com. This project is written in Julia using Packages: `Genie.jl`,`LibPQ.jl`,`PrettyTables.jl`
 
+## Feature:
+- Query the database
+- Create New Tables
+- Operations Related to those tables
+- Restoring the original state of the setup
 
-Steps:
-```
-git clone https://github.com/milesfrain/GenieOnHeroku.git
-cd GenieOnHeroku
-HEROKU_APP_NAME=my-app-name
-heroku create $HEROKU_APP_NAME --buildpack https://github.com/Optomatica/heroku-buildpack-julia.git
-git push heroku master
-heroku open -a $HEROKU_APP_NAME
-heroku logs -tail -a $HEROKU_APP_NAME
-```
+## Images:
 
-I was previously attempting to host on heroku by uploading docker containers, but encountered lots of issues. Moved that troubleshooting effort to a [separate branch](https://github.com/milesfrain/GenieOnHeroku/tree/dockerfile) in this repo.
+![](https://i.imgur.com/5hTZbPN.png)
+## Next Step
+- Setting up northwind database in the backend
 
-### GUI Guide (no terminal)
-
-Here's a [guide](https://gist.github.com/fonsp/38965d7595a5d1060e27d6ca2084778d) on how to deploy to Heroku without any of the above CLI commands. Thanks to [@fonsp](https://github.com/fonsp) for the writeup.
+## References:
+- https://genieframework.github.io/Genie.jl/dev/guides/Simple_API_backend.html
+- https://www.w3schools.com/sql/trysql.asp?filename=trysql_select_all
+- https://github.com/invenia/LibPQ.jl
+- https://github.com/ronisbr/PrettyTables.jl
+- https://dataframes.juliadata.org/stable/
