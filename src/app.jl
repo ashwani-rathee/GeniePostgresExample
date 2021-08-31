@@ -3,6 +3,7 @@ using Genie.Router
 using HTTP
 import Genie.Renderer.Json: json
 using Genie.Renderer.Json, Genie.Requests
+using Genie.Renderer.Html
 using LibPQ, Tables
 conn = LibPQ.Connection("dbname=danenfcgd5khab host=ec2-35-153-114-74.compute-1.amazonaws.com port=5432 user=hbwwyuvguzemdw password=514ffbe17667034ddf0db74ae2d5157c2caf0374c5ac127d0ce38a679345786e sslmode=require")
 
